@@ -1,3 +1,4 @@
+import BasicStruct.TreeNode;
 import javafx.util.Pair;
 
 import java.awt.*;
@@ -13,46 +14,33 @@ public class Solution {
         Solution solution = new Solution();
         Scanner in = new Scanner(System.in);
 
-
-
-        // 注意 hasNext 和 hasNextLine 的区别
-        while (in.hasNextInt()) { // 注意 while 处理多个 case
-            int m = in.nextInt();
-            int n = in.nextInt();
-
-            String a = in.next();
-            int b = Integer.parseInt(in.next(), 2);
-
-            int gap = m - n;
-            int count = 0;
-
-            int left = 0;
-
-            Set<Integer> set = new HashSet<>();
-            for(int right = n -1; right < m; right++){
-                int temp = Integer.parseInt(a.substring(left, right + 1), 2);
-                if((temp ^ b) == 0) count++;
-                else set.add(temp ^ b);
-
-                left++;
-            }
-
-            int[] arr= new int[set.size()];
-            int idx = 0;
-            for (Integer i : set) {
-                arr[idx++] = i;
-            }
-            for(int i = 0; i < idx - 1; i++){
-                for(int j = i + 1; j < idx; j++){
-                    if((arr[i] ^ arr[j]) == 0) count++;
-                }
-            }
-            System.out.println(count);
-        }
-
-
     }
 
+    public int findBottomLeftValue(TreeNode root) {
+        int res = 0;
+        Queue<TreeNode> queue = new ArrayDeque<>();
+        queue.offer(root);
+
+        while(!queue.isEmpty()){
+            TreeNode node = queue.poll();
+
+            if(node.right != null) queue.offer(node.right);
+            if(node.left != null) queue.offer(node.left);
+
+            res = node.val;
+        }
+        return res;
+    }
+
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+        if(root1 == null) return root2;
+        if(root2 == null) return root1;
+
+        TreeNode newRoot = new TreeNode(root1.val + root2.val);
+        newRoot.left = mergeTrees(root1.left, root2.left);
+        newRoot.right = mergeTrees(root1.right, root2.right);
+        return newRoot;
+    }
 
     public int minOperations(int k) {
         int n = 1;
