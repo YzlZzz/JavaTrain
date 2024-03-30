@@ -14684,7 +14684,7 @@ is meant to make the picture look a little more like a real mosaic, which is a p
 small colored stones in which there would be some natural color variation.) There is a menu bar
 above the drawing area. The “Control” menu contains commands for filling and clearing the
 drawing area, along with a few options that affect the appearance of the picture. The “Color”
-menu lets the user select the color that will be used when the user draws. The “Tools” menu
+menu lets the user select the color that will be used when the user draws. The “util” menu
 affects the behavior of the mouse. Using the default “Draw” tool, the mouse leaves a trail of
 single squares. Using the “Draw 3x3” tool, the mouse leaves a swath of colored squares that is
 three squares wide. There are also “Erase” tools, which let the user set squares back to their
@@ -14735,10 +14735,10 @@ works in exactly the same way as for a JButton.
    The main difference between a menu item and a button, of course, is that a menu item
 is meant to appear in a menu rather than in a panel. A menu in Java is represented by
 the class JMenu. A JMenu has a name, which is specified in the constructor, and it has an
-add(JMenuItem) method that can be used to add a JMenuItem to the menu. So, the “Tools”
+add(JMenuItem) method that can be used to add a JMenuItem to the menu. So, the “util”
 menu in the MosaicDraw program could be created as follows, where listener is a variable of
 type ActionListener:
-       JMenu toolsMenu = new JMenu("Tools"); // Create a menu with name "Tools"
+       JMenu toolsMenu = new JMenu("util"); // Create a menu with name "util"
 
        JMenuItem drawCommand = new JMenuItem("Draw");         // Create a menu item.
        drawCommand.addActionListener(listener);               // Add listener to menu item.

@@ -8,12 +8,85 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+
 public class Solution {
 
     public static void main(String[] args) {
         Solution solution = new Solution();
         Scanner in = new Scanner(System.in);
 
+        TreeNode node1 = new TreeNode(0);
+        TreeNode node2 = new TreeNode(1);
+        TreeNode node3 = new TreeNode(1);
+        node1.left = node2;
+        node1.right = node3;
+
+        solution.pathSum(node1, 0);
+
+    }
+
+    public int minimumAddedCoins(int[] coins, int target) {
+        Arrays.sort(coins);
+        int n = coins.length;
+
+        int x = 1;
+        int add = 0;
+        int index = 0;
+
+        while (x <= target){
+            if(index < n && coins[index] < x){
+                x += coins[index];
+                index++;
+            }else {
+                x *= 2;
+                add++;
+            }
+        }
+        return add;
+    }
+
+    Map<Long, Integer> prefix = new HashMap<>();
+    public int pathSum(TreeNode root, int sum) {
+        prefix.put(0L, 1);
+        return dfs(root, 0, sum);
+    }
+
+    public int dfs(TreeNode root, long curr, int sum){
+        if(root == null) return 0;
+
+        int res = 0;
+        curr += root.val;
+
+        res = prefix.getOrDefault(curr - sum, 0);
+        prefix.put(curr, prefix.getOrDefault(curr, 0) + 1);
+
+        res += dfs(root.left, curr, sum);
+        res += dfs(root.right, curr, sum);
+
+        return res;
+    }
+
+    public int MOD = 1000000007;
+
+    public int countWays(int[][] ranges) {
+        Arrays.sort(ranges, (a, b) -> a[0] - b[0]);
+        int count = 1;
+        int n = ranges.length;
+
+        for(int i = 0; i < n; i++){
+            int temp = ranges[i][1];
+            int j = i + 1;
+
+            while(j < n && ranges[i][0] <= temp){
+                temp = max(temp, ranges[j][1]);
+                j++;
+            }
+            count = (count * 2) % MOD;
+            i = j;
+
+        }
+        return count;
     }
 
     public int findBottomLeftValue(TreeNode root) {
