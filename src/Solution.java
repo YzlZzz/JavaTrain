@@ -16,14 +16,200 @@ public class Solution {
         Solution solution = new Solution();
         Scanner in = new Scanner(System.in);
 
-        TreeNode node1 = new TreeNode(0);
-        TreeNode node2 = new TreeNode(1);
-        TreeNode node3 = new TreeNode(1);
-        node1.left = node2;
-        node1.right = node3;
+        int[] g = {2,1,8};
+        System.out.println(solution.minimumSubarrayLength(g, 10));
 
-        solution.pathSum(node1, 0);
+    }
 
+    public int minMaxDistance(int[][] points) {
+        int n = points.length;
+        int minMaxDistance = Integer.MAX_VALUE;
+
+        for (int i = 0; i < n; i++) {
+
+            int maxDistance = 0;
+            for (int j = 0; j < n; j++) {
+                if (i != j) {
+                    int distance = Math.abs(points[i][0] - points[j][0]) + Math.abs(points[i][1] - points[j][1]);
+                    maxDistance = Math.max(maxDistance, distance);
+                }
+            }
+            minMaxDistance = Math.min(minMaxDistance, maxDistance);
+        }
+
+        return minMaxDistance;
+    }
+
+    public int minimumDistance(int[][] points) {
+
+        return 0;
+    }
+
+    public long countAlternatingSubarrays(int[] nums) {
+        int n = nums.length;
+        long sum = 0;
+        int left = 0;
+        int right = 0;
+
+        while (right < n){
+            while(right < n - 1 && nums[right] != nums[right+1]) right++;
+
+            sum += sum(left, right);
+
+            left = ++right;
+        }
+        return sum;
+    }
+
+    private long sum(int left, int right){
+        int temp = right - left + 1;
+        return (long) temp * (temp + 1) / 2;
+    }
+
+    public int maxBottlesDrunk(int numBottles, int numExchange) {
+        int sum = 0;
+
+        int full = numBottles;
+        int empty = 0;
+
+        while(full > 0){
+            sum += full;
+            empty += full;
+            full = 0;
+
+            while (empty >= numExchange){
+                empty -= numExchange++;
+                full++;
+            }
+        }
+        return sum;
+    }
+
+    public int sumOfTheDigitsOfHarshadNumber(int x) {
+        int temp = x;
+        int sum = 0;
+
+        while(temp > 0){
+            sum += temp % 10;
+            temp /= 10;
+        }
+        return x % sum == 0 ? sum : -1;
+    }
+
+    public int minimumLevels(int[] possible) {
+        int n = possible.length;
+
+        for (int i = 0; i < n; i++) {
+            if(possible[i] == 0) possible[i] = -1;
+        }
+
+        int sum = 0;
+
+        for (int i = 0; i < n; i++) {
+            sum += possible[i];
+        }
+
+        for(int i = 0; i < n - 1; i++){
+            possible[i + 1] += possible[i];
+        }
+
+        for(int i = 0; i < n; i++){
+            if(possible[i] + possible[i] > sum) return i + 1;
+        }
+        return -1;
+    }
+
+    static final int TOTAL_BITS = 30;
+
+    public int minimumSubarrayLength(int[] nums, int k) {
+        int minLen = Integer.MAX_VALUE;
+        int[] bits = new int[TOTAL_BITS];
+        int start = 0, end = 0;
+        int n = nums.length;
+        int sum = 0;
+
+        while(end < n){
+            sum |= nums[end];
+            for(int i = 0; i < TOTAL_BITS; i++){
+                bits[i] += (nums[end] >> i) & 1;
+            }
+
+            while(start <= end && sum >= k){
+                minLen = min(minLen, end - start + 1);
+                for(int i = 0; i < TOTAL_BITS; i++){
+                    bits[i] -= (nums[start] >> i) & 1;
+                }
+                sum = getValue(bits, k);
+                start++;
+            }
+            end++;
+        }
+        return minLen == Integer.MAX_VALUE ? -1 : minLen;
+    }
+
+    private int getValue(int[] bits, int k){
+        int value = 0;
+        for(int i = TOTAL_BITS - 1; i >= 0; i--){
+            if(bits[i] > 0) value += (1 << i);
+        }
+        return value;
+    }
+
+    private boolean[] visited;
+
+    public boolean findWhetherExistsPath(int n, int[][] graph, int start, int target) {
+        visited = new boolean[graph.length];
+        return dfs(graph, start, target);
+    }
+
+    private boolean dfs(int[][] graph, int start, int target){
+        for(int i = 0; i < graph.length; i++){
+            if(!visited[i]){
+                if(graph[i][0] == start && graph[i][1] == target) return true;
+
+                visited[i] = true;
+                if(graph[i][1] == target && dfs(graph, start, graph[i][0])) return true;
+
+                visited[i] = false;
+            }
+        }
+        return false;
+    }
+
+    private final int UNCOLORED = 0;
+    private final int RED = 1;
+    private final int GREEN = 2;
+    private int[] color;
+
+
+    public boolean isBipartite(int[][] graph) {
+        int n = graph.length;
+        color = new int[n];
+
+        for(int i = 0; i < n; i++){
+            if(color[i] == UNCOLORED){
+                Queue<Integer> queue = new LinkedList<>();
+                queue.offer(i);
+
+                color[i] = RED;
+
+                while(!queue.isEmpty()){
+                    int node = queue.poll();
+
+                    int cNei = color[node] == RED ? GREEN : RED;
+
+                    for (int nei : graph[node]) {
+                        if(color[nei] == UNCOLORED){
+                            queue.offer(nei);
+                            color[nei] = cNei;
+                        }else if(color[nei] != cNei){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     public int minimumAddedCoins(int[] coins, int target) {
